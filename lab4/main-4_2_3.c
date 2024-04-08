@@ -8,7 +8,7 @@ int main(void) {
   int i = 1;
 
   do {
-    if (i % 2 == 0) {
+    if (i % 2 != 0) {
       suma += i;
     }
 
