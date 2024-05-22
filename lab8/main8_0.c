@@ -1,20 +1,29 @@
 #include <math.h>
-#include <stdlib.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
-void DoubleMatrix(int* matrix, int rows, int columns){
-  for(int i = 0; i < rows; i++)
-    for(int j = 0; j < columns; j++){
+bool GetInt(int *number) {
+  int result = scanf("%d", number);
+  if (result == 1) {
+    return true;
+  }
+  return false;
+}
+
+void DoubleMatrix(int *matrix, int rows, int columns) {
+  for (int i = 0; i < rows; i++)
+    for (int j = 0; j < columns; j++) {
       matrix[i * columns + j] *= 2;
     }
 }
 
-void DisplayMatrix(int* matrix, int rows, int columns){
+void DisplayMatrix(int *matrix, int rows, int columns) {
 
-  for(int i = 0; i < rows; i++){
+  for (int i = 0; i < rows; i++) {
     printf("[ ");
-    for(int j = 0; j < columns; j++){
+    for (int j = 0; j < columns; j++) {
       printf("%d ", matrix[i * columns + j]);
     }
     printf("]\n");
@@ -22,21 +31,21 @@ void DisplayMatrix(int* matrix, int rows, int columns){
   printf("\n");
 }
 
-void RandomizeMatrixValues(int* matrix, int rows, int columns, int Low, int High){
-  for(int i = 0; i < rows; i++)
-    for(int j = 0; j < columns; j++){
-        matrix[i * columns + j] = Low + rand() % High;
+void RandomizeMatrixValues(int *matrix, int rows, int columns, int Low,
+                           int High) {
+  for (int i = 0; i < rows; i++)
+    for (int j = 0; j < columns; j++) {
+      matrix[i * columns + j] = Low + rand() % High;
     }
 }
 
 int main(void) {
   const int Low = -5, High = 10;
-  
+
   int rowsAmount;
   int columnAmount;
 
   int isStopped = 0;
-  int isStartedAgain = 0;
 
   const int yesCommand = 1, noCommand = 0;
 
@@ -45,34 +54,61 @@ int main(void) {
   while (!isStopped) {
 
     int playerCommand = 0;
-    printf("Start program?\n[1] - yes, [0] - no: ");
-    scanf("%d", &playerCommand);
+    do{
+      printf("Start program?\n[1] - yes, [0] - no: ");
+
+      if(!GetInt(&playerCommand) 
+        || (playerCommand != yesCommand && playerCommand != noCommand)){
+
+        printf("\nInvalid input\n");
+        printf("Try Again\n\n");
+
+        while (getchar() != '\n');
+      }
+      else{ break; }
+    } while(true);
 
     switch (playerCommand) {
     case yesCommand:
-      printf("Enter amount of rows: ");
-      scanf("%d", &rowsAmount);
-      printf("Enter amount of columns: ");
-      scanf("%d", &columnAmount);
+      do{
+        printf("Enter amount of rows: ");
+
+        if(!GetInt(&rowsAmount) 
+          || (rowsAmount <= 0)){
+
+          printf("\nInvalid input\n");
+          printf("Try Again\n\n");
+
+          while (getchar() != '\n');
+        }
+        else{ break; }
+      } while(true);
+      
+      do{
+        printf("Enter amount of columns: ");
+
+        if(!GetInt(&columnAmount) 
+          || (columnAmount <= 0)){
+
+          printf("\nInvalid input\n");
+          printf("Try Again\n\n");
+
+          while (getchar() != '\n');
+        }
+        else{ break; }
+      } while(true);
       break;
 
     case noCommand:
       isStopped = 1;
       printf("Programm stopped");
       break;
-
-    default:
-      isStartedAgain = 1;
-      printf("Wrong command\nTry again\n\n");
-      break;
     }
 
     if (isStopped == 1) {
       break;
-    } else if (isStartedAgain == 1) {
-      isStartedAgain = 0;
-      continue;
-    } else {
+    } 
+    else {
 
       int matrix[rowsAmount][columnAmount];
 
@@ -82,7 +118,7 @@ int main(void) {
       DisplayMatrix(*matrix, rowsAmount, columnAmount);
 
       DoubleMatrix(*matrix, rowsAmount, columnAmount);
-      
+
       printf("Matrix after doubling:\n");
       DisplayMatrix(*matrix, rowsAmount, columnAmount);
     }
