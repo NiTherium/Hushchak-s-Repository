@@ -2,95 +2,38 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <stdbool.h>
 
-bool GetInt(int* number){
-  int result = scanf("%d", number);
-  
-  if(result == 1){
-    return true;
-  }
-  
-  return false;
+void DoubleMatrix(int* matrix, int rows, int columns){
+  for(int i = 0; i < rows; i++)
+    for(int j = 0; j < columns; j++){
+      matrix[i * columns + j] *= 2;
+    }
 }
 
-void RandomizeArrayValues(int* array, int elements, int Low, int High){
-  for(int i = 0; i < elements; i++)
-    array[i] = Low + rand() % High;
+void DisplayMatrix(int* matrix, int rows, int columns){
+
+  for(int i = 0; i < rows; i++){
+    printf("[ ");
+    for(int j = 0; j < columns; j++){
+      printf("%d ", matrix[i * columns + j]);
+    }
+    printf("]\n");
+  }
+  printf("\n");
 }
 
-void DiplayArray(int* array, int elements){
-  printf("\nArray:");
-  for(int i = 0; i < elements; i++){
-    printf("\n%d", array[i]);
-  }
-  printf("\n\n");
-}
-
-int OddSum(int* array, int elements){
-  int sum = 0;
-
-  if(elements <= 2){
-    printf("Not enought elements to calculate sum\n\n");
-    return 0;
-  }
-  else{
-    for(int i = 0; i < elements; i++){
-      if(i % 2 != 0){
-        sum += array[i];
-      }
+void RandomizeMatrixValues(int* matrix, int rows, int columns, int Low, int High){
+  for(int i = 0; i < rows; i++)
+    for(int j = 0; j < columns; j++){
+        matrix[i * columns + j] = Low + rand() % High;
     }
-
-    printf("Sum of odd elements: %d\n\n", sum);
-    return sum;
-  }
-}
-
-int SumBetweenPositives(int* array, int elements){
-  int sum = 0;
-  int indexes[2] = {-1, -1};
-
-  if(elements <= 2){
-    printf("Not enought elements to calculate sum\n\n");
-    return 0;
-  }
-  else{
-    for(int i = 0; i < elements; i++){
-      if(array[i] > 0){
-        indexes[0] = i;
-        break;
-      }
-    }
-    for(int i = indexes[0] + 1; i < elements; i++){
-      if(array[i] > 0){
-        indexes[1] = i;
-        break;
-      }
-    }
-
-    if(indexes[0] == -1 || indexes[1] == -1) {
-      printf("Not enought Positive elements to calculate sum\n\n");
-      return 0;
-    }
-    else if((indexes[1] - indexes[0]) == 1) {
-      printf("Not enought elements to calculate sum\n\n");
-      return 0;
-    }
-    else {
-      for(int i = indexes[0] + 1; i < indexes[1]; i++){
-        sum += array[i];
-      }
-
-      printf("Sum between the first positive elements: %d\n\n", sum);
-      return sum;
-    }
-  }
 }
 
 int main(void) {
-  const int Low = -100, High = 200;
-
-  int elementsAmount;
+  const int Low = -5, High = 10;
+  
+  int rowsAmount;
+  int columnAmount;
 
   int isStopped = 0;
   int isStartedAgain = 0;
@@ -102,37 +45,15 @@ int main(void) {
   while (!isStopped) {
 
     int playerCommand = 0;
-    
-    do{
-      printf("Start program?\n[1] - yes, [0] - no: ");
-      
-      if(!GetInt(&playerCommand) 
-        || (playerCommand != yesCommand && playerCommand != noCommand)){
-        
-        printf("\nInvalid input\n");
-        printf("Try Again\n\n");
-        
-        while (getchar() != '\n');
-      }
-      else{ break; }
-    } while(true);
-    
+    printf("Start program?\n[1] - yes, [0] - no: ");
+    scanf("%d", &playerCommand);
 
     switch (playerCommand) {
     case yesCommand:
-      do{
-        printf("Enter amount of elements: ");
-
-        if(!GetInt(&elementsAmount) 
-          || (elementsAmount <= 0)){
-
-          printf("\nInvalid input\n");
-          printf("Try Again\n\n");
-
-          while (getchar() != '\n');
-        }
-        else{ break; }
-      } while(true);
+      printf("Enter amount of rows: ");
+      scanf("%d", &rowsAmount);
+      printf("Enter amount of columns: ");
+      scanf("%d", &columnAmount);
       break;
 
     case noCommand:
@@ -153,16 +74,17 @@ int main(void) {
       continue;
     } else {
 
-      int array[elementsAmount];
+      int matrix[rowsAmount][columnAmount];
 
-      RandomizeArrayValues(array, elementsAmount, Low, High);
+      RandomizeMatrixValues(*matrix, rowsAmount, columnAmount, Low, High);
 
-      DiplayArray(array, elementsAmount);
+      printf("\nMatrix before doubling:\n");
+      DisplayMatrix(*matrix, rowsAmount, columnAmount);
 
-      int oddSum = OddSum(array, elementsAmount);
-
-      int sumBetweenPositives = SumBetweenPositives(array, elementsAmount);
-
+      DoubleMatrix(*matrix, rowsAmount, columnAmount);
+      
+      printf("Matrix after doubling:\n");
+      DisplayMatrix(*matrix, rowsAmount, columnAmount);
     }
   }
 }
