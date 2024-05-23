@@ -82,23 +82,17 @@ int main(void) {
       isStopped = 1;
       printf("Programm stopped");
       break;
-
-    default:
-      isStartedAgain = 1;
-      printf("Wrong command\nTry again\n\n");
-      break;
     }
-
+    
     if (isStopped == 1) {
       break;
-    } else if (isStartedAgain == 1) {
-      isStartedAgain = 0;
-      continue;
     } else {
 
       float hypotenuse = sqrt(pow(a,2) + pow(b,2));
-      printf("\nHypotenuse: %.2f\n\n", hypotenuse);
+      printf("\nHypotenuse: %.2f\n", hypotenuse);
 
+      float area = (a * b) / 2;
+      printf("Area: %.2f\n\n", area);
     }
   }
 }
