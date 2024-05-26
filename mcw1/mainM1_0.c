@@ -4,106 +4,59 @@
 #include <time.h>
 #include <stdbool.h>
 
-bool GetInt(int* number){
-  int result = scanf("%d", number);
-
-  if(result == 1){
-    return true;
-  }
-  return false;
+bool GetInput(char* message, char* format, void* variable, bool(*validate)(void*)) {
+    printf("%s", message);
+    if (scanf(format, variable) != 1) {
+        while (getchar() != '\n');
+        return false;
+    }
+    while (getchar() != '\n');
+    return validate(variable);
 }
 
-bool GetFloat(float* number){
-  int result = scanf("%f", number);
-
-  if(result == 1){
-    return true;
-  }
-  return false;
+bool validatePlayerCommand(void* var) {
+  int value = *(int*)var;
+  return value == 1 || value == 0;
 }
+
+bool validateFloat(void* var) { return true; }
 
 int main(void) {
   float x, y;
-
-  int isStopped = 0;
-  int isStartedAgain = 0;
-
   const int yesCommand = 1, noCommand = 0;
 
   srand(time(0));
 
-  while (!isStopped) {
+  while (true) {
 
     int playerCommand = 0;
 
-    do{
-      printf("Start program?\n[1] - yes, [0] - no: ");
-
-      if(!GetInt(&playerCommand) 
-        || (playerCommand != yesCommand && playerCommand != noCommand)){
-
-        printf("\nInvalid input\n");
-        printf("Try Again\n\n");
-
-        while (getchar() != '\n');
-      }
-      else{ break; }
-    } while(true);
-
-    switch (playerCommand) {
-    case yesCommand:
-      do{
-        printf("Enter x: ");
-
-        if(!GetFloat(&x)){
-
-          printf("\nInvalid input\n");
-          printf("Try Again\n\n");
-
-          while (getchar() != '\n');
-        }
-        else{ break; }
-      } while(true);
-      do{
-        printf("Enter y: ");
-
-        if(!GetFloat(&y)){
-
-          printf("\nInvalid input\n");
-          printf("Try Again\n\n");
-
-          while (getchar() != '\n');
-        }
-        else{ break; }
-      } while(true);
-      break;
-
-    case noCommand:
-      isStopped = 1;
-      printf("Programm stopped");
-      break;
-
-    default:
-      isStartedAgain = 1;
-      printf("Wrong command\nTry again\n\n");
-      break;
+    while(!GetInput("Start program?\n[1] - yes, [0] - no: ", "%d", &playerCommand, 
+      validatePlayerCommand)) {
+      printf("Invalid command\nTry Again\n\n");
     }
 
-    if (isStopped == 1) {
+    if (playerCommand == noCommand) {
+      printf("Program stopped");
       break;
-    } else if (isStartedAgain == 1) {
-      isStartedAgain = 0;
-      continue;
     } else {
+      while(!GetInput("Enter x: ", "%f", &x, validateFloat)){
+        printf("Invalid value\nTry Again\n\n");
+      }
+
+      while(!GetInput("Enter y: ", "%f", &y, validateFloat)){
+        printf("Invalid value\nTry Again\n\n");
+      }
 
       if((x + y) < 0){
-        printf("\n\nCannot calculate\n\n");
+        printf("\n\nCannot calculate with this parameter values\n\n");
       }
       else{
         float result = (pow(x, 2) + pow(y, 2)) / (sqrt(x + y));
-        printf("\nResult is: %.2f\n\n", result);
+        printf("\nResult is: %.2f\n", result);
+        
+        printf("Program execution is complete\n\n");
       }
-
     }
   }
 }
