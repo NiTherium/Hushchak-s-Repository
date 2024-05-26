@@ -49,7 +49,7 @@ int main(void) {
       }
 
       if((x + y) < 0){
-        printf("\n\nCannot calculate with this parameter values\n\n");
+        printf("\nCannot calculate with this parameter values\n\n");
       }
       else{
         float result = (pow(x, 2) + pow(y, 2)) / (sqrt(x + y));
