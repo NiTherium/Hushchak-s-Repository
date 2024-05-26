@@ -4,101 +4,66 @@
 #include <time.h>
 #include <stdbool.h>
 
-bool GetInt(int* number){
-  int result = scanf("%d", number);
-
-  if(result == 1){
-    return true;
-  }
-  return false;
+bool GetInput(char* message, char* format, void* variable, bool(*validate)(void*)) {
+    printf("%s", message);
+    if (scanf(format, variable) != 1) {
+        while (getchar() != '\n');
+        return false;
+    }
+    while (getchar() != '\n');
+    return validate(variable);
 }
 
-bool GetFloat(float* number){
-  int result = scanf("%f", number);
+bool validatePlayerCommand(void* var) {
+  int value = *(int*)var;
+  return value == 1 || value == 0;
+}
 
-  if(result == 1){
-    return true;
-  }
-  return false;
+bool validateSalary(void* var) 
+{ 
+  float value = *(float*)var;
+  return value > 0; 
+}
+
+bool validatePercents(void* var) 
+{ 
+  float value = *(float*)var;
+  return value >= 0 && value <= 100; 
 }
 
 int main(void) {
   float salary, tax;
-
-  int isStopped = 0;
-  int isStartedAgain = 0;
-
   const int yesCommand = 1, noCommand = 0;
 
   srand(time(0));
 
-  while (!isStopped) {
+  while (true) {
 
     int playerCommand = 0;
 
-    do{
-      printf("Start program?\n[1] - yes, [0] - no: ");
-
-      if(!GetInt(&playerCommand) 
-        || (playerCommand != yesCommand && playerCommand != noCommand)){
-
-        printf("\nInvalid input\n");
-        printf("Try Again\n\n");
-
-        while (getchar() != '\n');
-      }
-      else{ break; }
-    } while(true);
-
-    switch (playerCommand) {
-    case yesCommand:
-      do{
-        printf("Enter the amount of the worker's salary: ");
-
-        if(!GetFloat(&salary) || salary <= 0){
-
-          printf("\nInvalid input\n");
-          printf("Try Again\n\n");
-
-          while (getchar() != '\n');
-        }
-        else{ break; }
-      } while(true);
-      do{
-        printf("enter the percentage of the tax: ");
-
-        if(!GetFloat(&tax) || tax < 0 || tax > 100){
-
-          printf("\nInvalid input\n");
-          printf("Try Again\n\n");
-
-          while (getchar() != '\n');
-        }
-        else{ break; }
-      } while(true);
-      break;
-
-    case noCommand:
-      isStopped = 1;
-      printf("Programm stopped");
-      break;
-
-    default:
-      isStartedAgain = 1;
-      printf("Wrong command\nTry again\n\n");
-      break;
+    while(!GetInput("Start program?\n[1] - yes, [0] - no: ", "%d", &playerCommand, 
+      validatePlayerCommand)) {
+      printf("Invalid command\nTry Again\n\n");
     }
 
-    if (isStopped == 1) {
+    if (playerCommand == noCommand) {
+      printf("Program stopped");
       break;
-    } else if (isStartedAgain == 1) {
-      isStartedAgain = 0;
-      continue;
     } else {
+      while(!GetInput("Enter the amount of the worker's salary: ", "%f", &salary, 
+        validateSalary)){
+        printf("Invalid value\nTry Again\n\n");
+      }
+
+      while(!GetInput("Enter the percentage of the tax: ", "%f", &tax, 
+        validatePercents)){
+        printf("Invalid value\nTry Again\n\n");
+      }
 
       float taxableSalary = salary - (salary * tax / 100);
       printf("Taxable salary: %.2f\n", taxableSalary);
 
+      printf("Program execution is complete\n\n");
     }
   }
 }
