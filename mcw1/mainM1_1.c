@@ -56,7 +56,9 @@ int main(void) {
       printf("\nHypotenuse: %.2f\n", hypotenuse);
 
       float area = (a * b) / 2;
-      printf("Area: %.2f\n\n", area);
+      printf("Area: %.2f\n", area);
+
+      printf("Program execution is complete\n\n");
     }
   }
 }
