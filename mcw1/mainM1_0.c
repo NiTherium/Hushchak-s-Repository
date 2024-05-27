@@ -48,7 +48,7 @@ int main(void) {
         printf("Invalid value\nTry Again\n\n");
       }
 
-      if((x + y) < 0){
+      if((x + y) <= 0){
         printf("\nCannot calculate with this parameter values\n\n");
       }
       else{
